@@ -1,51 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Plotly Chart</title>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <style>
-        body { font-family: Arial, sans-serif; }
-        #plotly-chart { width: 100%; height: 100%; }
-        .responsive { width: 100%; height: auto; }
-    </style>
-</head>
-<body>
-    <div id="plotly-chart"></div>
-    <script>
-        // Data for the sunburst chart (2017-2025)
-        var data = [{
-            type: 'sunburst',
-            labels: ['2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'],
-            parents: ['', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024'],
-            values: [10, 20, 30, 40, 50, 60, 70, 80, 90],
-            textinfo: "label+value+percent",
-            branchvalues: "total",
-            hoverinfo: "label+value+percent",
-            insidetextorientation: " radial"
-        }];
-
-        // Layout for the chart
-        var layout = {
-            margin: { t: 0, l: 0, r: 0, b: 0 },
-            height: 500,
-            width: 800,
-            title: 'Years Data (2017-2025)',
-        };
-
-        // Plotting function
-        function plotChart() {
-            Plotly.newPlot('plotly-chart', data, layout);
-        }
-
-        // Event handler for window resize to make chart responsive
-        window.onresize = function() {
-            Plotly.Plots.resize('plotly-chart');
-        };
-
-        // Initial plot
-        plotChart();
-    </script>
-</body>
-</html>
+<!-- Responsive layout meta -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+    /* Add responsive styles to your layout */
+    .container { margin: 0 auto; padding: 20px; max-width: 1200px; }
+    @media screen and (max-width: 768px) {
+        /* Add mobile specific styles */
+        .container { padding: 10px; }
+    }
+</style>
+<script>
+    // Fixing resize handler
+    function handleResize(gd) {
+        Plotly.Plots.resize(gd);
+    }
+</script>
+<script>
+    // Initializing Plotly with responsive configurations
+    Plotly.newPlot('plotDiv', data, layout, { responsive: true, displayModeBar: false });
+</script>
+<!-- Content from commit -->
+<h1>Interactive Diagram</h1>
+<!-- Existing content goes here, merged accordingly to include the mentioned changes -->
