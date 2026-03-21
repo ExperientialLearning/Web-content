@@ -1,18 +1,150 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interaction Diagram</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: #f5f5f5;
+      padding: 1rem;
+    }
+    
+    .container {
+      max-width: 1600px;
+      margin: 0 auto;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    
+    .plotly-graph-div {
+      width: 100% !important;
+      height: auto !important;
+      min-height: 600px;
+    }
+    
+    /* Tablet devices */
+    @media (max-width: 1024px) {
+      .plotly-graph-div {
+        min-height: 700px;
+      }
+      body {
+        padding: 0.5rem;
+      }
+    }
+    
+    /* Mobile devices */
+    @media (max-width: 768px) {
+      .plotly-graph-div {
+        min-height: 800px;
+      }
+      body {
+        padding: 0.25rem;
+        background-color: white;
+      }
+      .container {
+        border-radius: 0;
+        box-shadow: none;
+      }
+    }
+    
+    /* Small phones */
+    @media (max-width: 480px) {
+      .plotly-graph-div {
+        min-height: 900px;
+      }
+      body {
+        padding: 0;
+      }
+    }
+  </style>
 </head>
 <body>
-    <script>
-        const myFunction = () => {
-            // fixed arrow function syntax
-            console.log('This is a fixed arrow function!');
-        };
+  <div class="container">
+    <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+    <script src="https://cdn.plot.ly/plotly-2.4.1.min.js"></script>
+    <div id="c792220b-50aa-4ac2-86c8-30c7b7ff1c80" class="plotly-graph-div"></div>
 
-        myFunction();
+    <script>
+      (function() {
+        const YEAR_CENTER = {"2017": "<b>2017</b><br><span style='font-size:12px'>Approved modules: 5<br>Students participating: 350<br>Recognitions (incl. awards): 192</span>", "2018": "<b>2018</b><br><span style='font-size:12px'>Approved modules: 8<br>Students participating: 520<br>Recognitions (incl. awards): 280</span>", "2019": "<b>2019</b><br><span style='font-size:12px'>Approved modules: 12<br>Students participating: 780<br>Recognitions (incl. awards): 420</span>", "2020": "<b>2020</b><br><span style='font-size:12px'>Approved modules: 15<br>Students participating: 950<br>Recognitions (incl. awards): 510</span>", "2021": "<b>2021</b><br><span style='font-size:12px'>Approved modules: 18<br>Students participating: 1200<br>Recognitions (incl. awards): 645</span>", "2022": "<b>2022</b><br><span style='font-size:12px'>Approved modules: 22<br>Students participating: 1450<br>Recognitions (incl. awards): 780</span>", "2023": "<b>2023</b><br><span style='font-size:12px'>Approved modules: 25<br>Students participating: 1650<br>Recognitions (incl. awards): 890</span>", "2024": "<b>2024</b><br><span style='font-size:12px'>Approved modules: 28<br>Students participating: 1850<br>Recognitions (incl. awards): 1020</span>", "2025": "<b>2025</b><br><span style='font-size:12px'>Approved modules: 32<br>Students participating: 2100<br>Recognitions (incl. awards): 1181</span>"};
+        
+        const TOTAL_CENTER = "<b>10,998</b><br><span style='font-size:12px'>recognitions<br>(including Rector's Awards)</span>";
+        const gd = document.querySelector('.plotly-graph-div');
+        
+        if (!gd) return;
+
+        function setCenter(htmlText) {
+          const ann = (gd.layout && gd.layout.annotations) ? gd.layout.annotations.slice() : [];
+          if (!ann.length) return;
+          ann[0] = Object.assign({}, ann[0], {
+            text: htmlText,
+            bgcolor: "rgba(255,255,255,0.96)",
+            bordercolor: "rgba(255,255,255,0.96)",
+            borderpad: 10
+          });
+          Plotly.relayout(gd, {annotations: ann});
+        }
+
+        function yearFromPoint(p) {
+          if (!p) return null;
+          if (p.id && typeof p.id === "string") {
+            const m = p.id.match(/SU\/(\\d{4})/);
+            if (m) return m[1];
+          }
+          if (p.label) {
+            const s = String(p.label).replace(/<br>/g,' ').trim();
+            if (/^\\d{4}$/.test(s)) return s;
+          }
+          return null;
+        }
+
+        gd.on('plotly_hover', function(ev) {
+          if (!ev || !ev.points || !ev.points.length) return;
+          const y = yearFromPoint(ev.points[0]);
+          if (y && YEAR_CENTER[y]) setCenter(YEAR_CENTER[y]);
+        });
+
+        gd.on('plotly_unhover', function(ev) {
+          const trace = gd.data && gd.data[0] ? gd.data[0] : null;
+          const level = trace && trace.level ? trace.level : "";
+          const m = typeof level === "string" ? level.match(/SU\/(\\d{4})/) : null;
+          if (m && YEAR_CENTER[m[1]]) setCenter(YEAR_CENTER[m[1]]);
+          else setCenter(TOTAL_CENTER);
+        });
+
+        gd.on('plotly_sunburstclick', function(ev) {
+          if (!ev || !ev.points || !ev.points.length) return;
+          const y = yearFromPoint(ev.points[0]);
+          setTimeout(() => {
+            if (y && YEAR_CENTER[y]) setCenter(YEAR_CENTER[y]);
+            else {
+              const trace = gd.data && gd.data[0] ? gd.data[0] : null;
+              const level = trace && trace.level ? trace.level : "";
+              const m = typeof level === "string" ? level.match(/SU\/(\\d{4})/) : null;
+              if (m && YEAR_CENTER[m[1]]) setCenter(YEAR_CENTER[m[1]]);
+              else setCenter(TOTAL_CENTER);
+            }
+          }, 0);
+        });
+
+        // Handle responsive resizing
+        window.addEventListener('resize', function() {
+          if (gd.data && gd.data.length > 0) {
+            Plotly.Plots.resize(gd);
+          }
+        });
+
+        setCenter(TOTAL_CENTER);
+      })();
     </script>
+  </div>
 </body>
 </html>
