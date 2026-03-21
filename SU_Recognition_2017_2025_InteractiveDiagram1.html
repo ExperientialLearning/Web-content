@@ -3,92 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Diagram 2017-2025</title>
+    <title>Interactive Plotly Chart</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        .year {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 15px 0;
-        }
-        .chart {
-            width: 100%;
-            height: auto;
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        @media (max-width: 768px) {
-            .chart {
-                width: 100%;
-                height: auto;
-            }
-        }
+        body { font-family: Arial, sans-serif; }
+        #plotly-chart { width: 100%; height: 100%; }
+        .responsive { width: 100%; height: auto; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Interactive Recognition Chart 2017-2025</h1>
-        <div class="year">
-            <h2>2017</h2>
-            <div class="chart" id="chart2017"></div>
-        </div>
-        <div class="year">
-            <h2>2018</h2>
-            <div class="chart" id="chart2018"></div>
-        </div>
-        <div class="year">
-            <h2>2019</h2>
-            <div class="chart" id="chart2019"></div>
-        </div>
-        <div class="year">
-            <h2>2020</h2>
-            <div class="chart" id="chart2020"></div>
-        </div>
-        <div class="year">
-            <h2>2021</h2>
-            <div class="chart" id="chart2021"></div>
-        </div>
-        <div class="year">
-            <h2>2022</h2>
-            <div class="chart" id="chart2022"></div>
-        </div>
-        <div class="year">
-            <h2>2023</h2>
-            <div class="chart" id="chart2023"></div>
-        </div>
-        <div class="year">
-            <h2>2024</h2>
-            <div class="chart" id="chart2024"></div>
-        </div>
-        <div class="year">
-            <h2>2025</h2>
-            <div class="chart" id="chart2025"></div>
-        </div>
-    </div>
+    <div id="plotly-chart"></div>
     <script>
-        // Add interactive chart functionality here
-        function renderChart(year) {
-            // Chart rendering logic for each year
+        // Data for the sunburst chart (2017-2025)
+        var data = [{
+            type: 'sunburst',
+            labels: ['2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'],
+            parents: ['', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024'],
+            values: [10, 20, 30, 40, 50, 60, 70, 80, 90],
+            textinfo: "label+value+percent",
+            branchvalues: "total",
+            hoverinfo: "label+value+percent",
+            insidetextorientation: " radial"
+        }];
+
+        // Layout for the chart
+        var layout = {
+            margin: { t: 0, l: 0, r: 0, b: 0 },
+            height: 500,
+            width: 800,
+            title: 'Years Data (2017-2025)',
+        };
+
+        // Plotting function
+        function plotChart() {
+            Plotly.newPlot('plotly-chart', data, layout);
         }
-        for (let i = 2017; i <= 2025; i++) {
-            renderChart(i);
-        }
+
+        // Event handler for window resize to make chart responsive
+        window.onresize = function() {
+            Plotly.Plots.resize('plotly-chart');
+        };
+
+        // Initial plot
+        plotChart();
     </script>
 </body>
 </html>
